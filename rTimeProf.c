@@ -17,6 +17,8 @@ void rtp_init(){
 }
 
 void rtp_start(const char* section_name){
+	if(rtp_get_stats_index(section_name) != -1) return;
+
 	rtp_section_stats stats = {.section_name = section_name, .start_time = 0.0, .end_time = 0.0, .start_and_end_set = 0};
 
 	LARGE_INTEGER start_time;
@@ -28,7 +30,7 @@ void rtp_start(const char* section_name){
 
 void rtp_stop(const char* section_name){
 	int stats_index = rtp_get_stats_index(section_name);
-	if(stats_index != -1){
+	if(stats_index != -1 && !_rtp_sections[stats_index].start_and_end_set){
 		LARGE_INTEGER end_time;
 		QueryPerformanceCounter(&end_time);
 		_rtp_sections[stats_index].end_time = (end_time.QuadPart * 1000000) / _freq;
@@ -41,12 +43,15 @@ int rtp_get_stats_index(const char* section_name){
 	while (i < _rtp_sections_cursor) {
 		rtp_section_stats result = _rtp_sections[i];
 
-		while(*section_name && *section_name == *result.section_name){
-			section_name++;
-			result.section_name++;
+		const char* str1 = section_name;
+		const char* str2 = result.section_name;
+
+		while(*str1 && *str1 == *str2){
+			str1++;
+			str2++;
 		}
 
-		if(!( *(const unsigned char*)section_name || *(const unsigned char*)result.section_name )) break;
+		if(!( *(const unsigned char*)str1 || *(const unsigned char*)str2 )) break;
 
 		i++;
 	}
@@ -61,7 +66,6 @@ rtp_section_stats rtp_get_stats(const char* section_name){
 void rtp_quit(){
 	for (int i = 0; i < _rtp_sections_cursor; ++i) _rtp_sections[i] = (rtp_section_stats){0};
 }
-
 
 #elif defined(__linux__) || defined(__gnu_linux__)
 

@@ -18,4 +18,4 @@ every: clean all run
 every_debug: clean all debug
 
 clean:
-	del *.o *.exe TODO.txt
+	del *.o *.exe
