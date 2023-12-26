@@ -1,1 +1,1 @@
-perform API tests in main.c
+test on linux
