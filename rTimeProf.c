@@ -8,7 +8,7 @@ static int _rtp_sections_cursor = 0;
 #include <profileapi.h>
 #include <BaseTsd.h>
 
-static LONGLONG _freq = {0};
+static LARGE_INTEGER _freq = {0};
 
 static int _rtp_get_stats_index(const char* section_name){
 	int i = 0;
@@ -31,9 +31,7 @@ static int _rtp_get_stats_index(const char* section_name){
 }
 
 void rtp_init(){
-    LARGE_INTEGER result;
-    QueryPerformanceFrequency(&result);
-    _freq = result.QuadPart;
+    QueryPerformanceFrequency(&_freq);
 }
 
 void rtp_start(const char* section_name){
@@ -43,7 +41,7 @@ void rtp_start(const char* section_name){
 
 	LARGE_INTEGER start_time;
 	QueryPerformanceCounter(&start_time);
-	stats.start_time = (start_time.QuadPart * 1000000.0) / _freq;
+	stats.start_time = (double)start_time.QuadPart / (double)_freq.QuadPart;
 
 	if(_rtp_sections_cursor < MAX_RTP_SECTIONS - 1) _rtp_sections[_rtp_sections_cursor++] = stats;
 }
@@ -53,7 +51,7 @@ void rtp_stop(const char* section_name){
 	if(stats_index != -1 && !_rtp_sections[stats_index].start_and_end_set){
 		LARGE_INTEGER end_time;
 		QueryPerformanceCounter(&end_time);
-		_rtp_sections[stats_index].end_time = (end_time.QuadPart * 1000000) / _freq;
+		_rtp_sections[stats_index].end_time = (double)end_time.QuadPart / (double)_freq.QuadPart;
 		_rtp_sections[stats_index].start_and_end_set = 1;
 	}
 }
@@ -71,7 +69,6 @@ void rtp_quit(){
 
 #define _POSIX_C_SOURCE 199309L
 #include <time.h>
-
 
 static int _rtp_get_stats_index(const char* section_name){
 	int i = 0;
@@ -102,7 +99,7 @@ void rtp_start(const char* section_name){
 
 	rtp_section_stats stats = {.section_name = section_name, .start_time = 0.0, .end_time = 0.0, .start_and_end_set = 0};
 
-	stats.start_time = ((double)clock() / CLOCKS_PER_SEC) *  * 1000000.0;
+	stats.start_time = ((double)clock() / CLOCKS_PER_SEC) * 1000000.0;
 
 	if(_rtp_sections_cursor < MAX_RTP_SECTIONS - 1) _rtp_sections[_rtp_sections_cursor++] = stats;
 }

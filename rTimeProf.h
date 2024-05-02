@@ -3,11 +3,10 @@
 
 #define MAX_RTP_SECTIONS 100
 
-// in microseconds
 typedef struct rtp_section_stats {
 	const char* section_name;
-	double start_time;
-	double end_time;
+	double start_time; // in seconds
+	double end_time;   // in seconds (take the difference between start_time and end_time for elapsed time)
 	int start_and_end_set;
 } rtp_section_stats;
 
