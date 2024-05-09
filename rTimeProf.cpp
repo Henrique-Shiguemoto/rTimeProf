@@ -8,7 +8,7 @@ static int _rtp_sections_cursor = 0;
 #include <profileapi.h>
 #include <BaseTsd.h>
 
-static LARGE_INTEGER _freq = {0};
+static LARGE_INTEGER _freq = {.QuadPart = 0};
 
 static int _rtp_get_stats_index(const char* section_name){
 	int i = 0;
@@ -58,23 +58,11 @@ void rtp_stop(const char* section_name){
 
 rtp_section_stats rtp_get_stats(const char* section_name){
 	int stats_index = _rtp_get_stats_index(section_name);
-	return (stats_index != -1 && _rtp_sections[stats_index].start_and_end_set) ? _rtp_sections[stats_index] : (rtp_section_stats){0};
+	return (stats_index != -1 && _rtp_sections[stats_index].start_and_end_set) ? _rtp_sections[stats_index] : (rtp_section_stats){NULL, 0.0, 0.0, 0};
 }
 
 void rtp_quit(){
-	// log results in csv format
-
-// 	HANDLE CreateFileA(
-//   [in]           LPCSTR                lpFileName,
-//   [in]           DWORD                 dwDesiredAccess,
-//   [in]           DWORD                 dwShareMode,
-//   [in, optional] LPSECURITY_ATTRIBUTES lpSecurityAttributes,
-//   [in]           DWORD                 dwCreationDisposition,
-//   [in]           DWORD                 dwFlagsAndAttributes,
-//   [in, optional] HANDLE                hTemplateFile
-// );
-
-	for (int i = 0; i < _rtp_sections_cursor; ++i) _rtp_sections[i] = (rtp_section_stats){0};
+	for (int i = 0; i < _rtp_sections_cursor; ++i) _rtp_sections[i] = (rtp_section_stats){NULL, 0.0, 0.0, 0};
 }
 
 #elif defined(__linux__) || defined(__gnu_linux__)
@@ -130,8 +118,6 @@ rtp_section_stats rtp_get_stats(const char* section_name){
 }
 
 void rtp_quit(){
-// log results in csv
-
 	for (int i = 0; i < _rtp_sections_cursor; ++i) _rtp_sections[i] = (rtp_section_stats){0};
 }
 
