@@ -62,18 +62,6 @@ rtp_section_stats rtp_get_stats(const char* section_name){
 }
 
 void rtp_quit(){
-	// log results in csv format
-
-// 	HANDLE CreateFileA(
-//   [in]           LPCSTR                lpFileName,
-//   [in]           DWORD                 dwDesiredAccess,
-//   [in]           DWORD                 dwShareMode,
-//   [in, optional] LPSECURITY_ATTRIBUTES lpSecurityAttributes,
-//   [in]           DWORD                 dwCreationDisposition,
-//   [in]           DWORD                 dwFlagsAndAttributes,
-//   [in, optional] HANDLE                hTemplateFile
-// );
-
 	for (int i = 0; i < _rtp_sections_cursor; ++i) _rtp_sections[i] = (rtp_section_stats){0};
 }
 
@@ -130,10 +118,7 @@ rtp_section_stats rtp_get_stats(const char* section_name){
 }
 
 void rtp_quit(){
-// log results in csv
-
 	for (int i = 0; i < _rtp_sections_cursor; ++i) _rtp_sections[i] = (rtp_section_stats){0};
 }
-
 
 #endif
